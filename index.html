@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maroni forever : Romain & Stanney</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Mono:wght@400&display=swap');
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:#f7f5f0;color:#171717;font-family:"Cormorant Garamond",Georgia,serif}
+.page{width:min(100%,760px);min-height:100vh;margin:auto;padding:42px 24px 80px;display:flex;flex-direction:column;align-items:center}
+.title{font:11px "DM Mono",monospace;letter-spacing:.08em;text-transform:uppercase;margin-bottom:28px;opacity:.65;text-align:center}
+.hero{width:min(92vw,620px);cursor:pointer;transition:transform .45s ease;user-select:none}
+.hero:hover{transform:translateY(-3px)}
+.hero img{width:100%;display:block}
+.hint{margin-top:18px;font:10px "DM Mono",monospace;letter-spacing:.06em;opacity:.55;text-transform:uppercase}
+.letter-wrap{width:min(100%,660px);margin-top:38px;display:none}
+.letter-wrap.open{display:block;animation:reveal .9s ease forwards}
+@keyframes reveal{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.letter{background:#fffdf8;padding:clamp(28px,6vw,60px);box-shadow:0 10px 40px rgba(0,0,0,.055)}
+.letter p{font-size:clamp(18px,2.4vw,22px);line-height:1.55;margin:0 0 1.15em}
+.letter .salutation{margin-bottom:1.5em}
+.signature{margin-top:2em!important;margin-bottom:0!important}
+.question{text-align:center;margin-top:44px;font-size:clamp(26px,5vw,40px);line-height:1.15}
+.actions{display:flex;justify-content:center;margin-top:24px}
+button{border:1px solid #171717;background:transparent;color:#171717;padding:13px 22px;font:11px "DM Mono",monospace;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:.25s}
+button:hover{background:#171717;color:white}
+.reply{display:none;margin-top:28px;padding:28px;background:#fffdf8;box-shadow:0 10px 40px rgba(0,0,0,.055)}
+.reply.show{display:block;animation:reveal .5s ease}
+label{display:block;font:10px "DM Mono",monospace;text-transform:uppercase;letter-spacing:.06em;margin:0 0 9px;opacity:.65}
+input,textarea{width:100%;border:1px solid #c9c6be;background:white;padding:12px;font:17px "Cormorant Garamond",Georgia,serif;margin-bottom:18px;outline:none}
+textarea{min-height:140px;resize:vertical}
+input:focus,textarea:focus{border-color:#171717}
+.small{font:10px "DM Mono",monospace;line-height:1.6;opacity:.5;margin-top:14px}
+.footer{margin-top:70px;font:10px "DM Mono",monospace;letter-spacing:.05em;opacity:.4;text-align:center}
+.typewriter{white-space:normal}
+@media(max-width:520px){.page{padding-top:28px}.letter{padding:25px 22px}}
+</style>
+</head>
+<body>
+<main class="page">
+<div class="title">Maroni forever : Romain &amp; Stanney</div>
+
+<div class="hero" id="hero" role="button" tabindex="0" aria-label="Open the letter">
+<img src="plume-letter.png" alt="Plume holding a letter with a heart">
+</div>
+<div class="hint" id="hint">Click the letter to open</div>
+
+<section class="letter-wrap" id="letterWrap">
+<article class="letter">
+<p class="salutation">Dear Fur,</p>
+<div id="letterText"></div>
+</article>
+
+<div class="question">Will you be my Man of Honour?</div>
+<div class="actions"><button id="replyButton">Write your answer</button></div>
+
+<form class="reply" id="replyForm">
+<label for="name">Your name</label>
+<input id="name" autocomplete="name" placeholder="Fur">
+<label for="message">Your answer</label>
+<textarea id="message" placeholder="Write your reply here..."></textarea>
+<button type="submit">Send my answer</button>
+<div class="small">The button opens your email app with the answer prepared. Your email address is added in the code before publishing.</div>
+</form>
+</section>
+
+<div class="footer">Romain &amp; Stanney · Summer 2028</div>
+</main>
+
+<script>
+const paragraphs = [
+"We have come a long way. Being your friend has been an incredible journey through life, and our friendship has always been something deeply fulfilling to my soul.",
+"You have always been someone I could count on, even though distance has separated us for most of our lives.",
+"Through the joyful moments and all the laughter we have shared, I carry so many memories that go all the way back to when we were children.",
+"And through the less joyful ones, I remember the tears we shed from being bullied simply for being who we are. I remember the pain of losing someone who was once a close friend to both of us.",
+"We have had our annoyances, our disagreements, and our difficult moments too. But I hope I have never expressed any of them through anger, violence, or abuse. And even if, for a split second, such thoughts may have crossed our minds, I choose to consider them nonexistent. What matters to me is everything we have built, shared, and carried with us through the years.",
+"Because what is life without both joy and sadness? Perhaps a life without either would not really be life at all.",
+"And now, as we enter another chapter of our lives, I want to take this special day to thank you for being part of mine.",
+"So, as a small expression of my gratitude and love for our friendship, I hope you will accept to be my man of honor at our wedding.",
+"September 27th has been a long time coming for Romain and me — seven years after he first told me he loved me. Seven years in which life took its own course, as it always seems to do, somehow bringing us to the right place at the right time.",
+"And now, I would love nothing more than to have you there for this next chapter.",
+"If your answer is yes, I hope you will be able to come and celebrate with us, surrounded by our closest friends and family, somewhere in the summer of 2028."
+];
+
+const hero=document.getElementById('hero');
+const wrap=document.getElementById('letterWrap');
+const hint=document.getElementById('hint');
+const textBox=document.getElementById('letterText');
+const replyButton=document.getElementById('replyButton');
+const replyForm=document.getElementById('replyForm');
+
+function openLetter(){
+ if(wrap.classList.contains('open')) return;
+ wrap.classList.add('open');
+ hint.textContent='A letter for you';
+ textBox.innerHTML='';
+ let i=0;
+ function next(){
+   if(i>=paragraphs.length){
+     const s=document.createElement('p');
+     s.className='signature';
+     s.innerHTML='With all my love,<br><br>Stanney';
+     textBox.appendChild(s);
+     return;
+   }
+   const p=document.createElement('p');
+   p.textContent=paragraphs[i++];
+   textBox.appendChild(p);
+   p.style.opacity='0';
+   p.animate([{opacity:0},{opacity:1}],{duration:650,fill:'forwards'});
+   setTimeout(next,420);
+ }
+ setTimeout(next,650);
+ setTimeout(()=>wrap.scrollIntoView({behavior:'smooth',block:'start'}),500);
+}
+hero.addEventListener('click',openLetter);
+hero.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openLetter()}});
+
+replyButton.addEventListener('click',()=>{
+ replyForm.classList.toggle('show');
+ if(replyForm.classList.contains('show')) setTimeout(()=>replyForm.scrollIntoView({behavior:'smooth',block:'center'}),100);
+});
+
+replyForm.addEventListener('submit',e=>{
+ e.preventDefault();
+ const recipient='YOUR_EMAIL@example.com'; // <-- replace this
+ const name=document.getElementById('name').value||'Fur';
+ const message=document.getElementById('message').value||'';
+ const subject=encodeURIComponent('Maroni forever — Fur’s answer');
+ const body=encodeURIComponent('Dear Stanney,\n\n'+message+'\n\n— '+name);
+ window.location.href=`mailto:${recipient}?subject=${subject}&body=${body}`;
+});
+</script>
+</body>
+</html>
